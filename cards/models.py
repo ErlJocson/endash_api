@@ -1,7 +1,12 @@
 from dynamorm import DynamoModel, fields
 
 class Cards(DynamoModel):
-    id = fields.String(hash_key=True)
+
+    class Table:
+        name = "Cards"
+        hash_key = "card_id"
+
+    ID = fields.String(hash_key=True)
     title = fields.String()
     logo = fields.String()
     video = fields.String()
