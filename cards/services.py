@@ -43,8 +43,34 @@ def add_card(doc_name: str, sheet_name: str = None, card_data: dict = None):
     worksheet.append_row(list(card_data.values()))
     return True
     
-def delete_card():
-   return
+def delete_card(doc_name: str,  row_id: int, sheet_name: str = None):
+  sh = settings.GSPREAD_CLIENT.open(doc_name)
+  worksheet = sh.worksheet(sheet_name) if sheet_name else sh.get_worksheet(0)
+  try:
+    all_data = worksheet.get_all_values()
+    header, data = all_data[0], all_data[1:]
+    new_data = [row for row in data if str(row[0]) != str(row_id)]  # Assuming unique ID is in the first column
+    worksheet.clear()
+    worksheet.append_row(header)
+    for row in new_data:
+        worksheet.append_row(row)
+    return True
+  except Exception as e:
+    print(f"Error: {e}")
+    return False
 
-def update_card():
-   return
+def update_card(doc_name: str, row_id:int, new_data: list, sheet_name: str = None):
+  sh = settings.GSPREAD_CLIENT.open(doc_name)
+  worksheet = sh.worksheet(sheet_name) if sheet_name else sh.get_worksheet(0)
+  try:
+      # Get all data from the sheet
+      all_data = worksheet.get_all_values()
+      # Find the row to update
+      for index, row in enumerate(all_data):
+          if str(row[0]) == str(row_id):  # Assuming the unique ID is in the first column
+              worksheet.update(f'A{index+1}:F{index+1}', [new_data])
+              return {"status": "success", "message": f"Row with unique ID {row_id} updated successfully."}
+      
+      return {"status": "error", "message": f"Unique ID {row_id} not found."}
+  except Exception as e:
+      return {"status": "error", "message": str(e)}
