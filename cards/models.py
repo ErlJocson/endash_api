@@ -1,14 +1,9 @@
-from dynamorm import DynamoModel, fields
+# from django.db import models
 
-class Cards(DynamoModel):
+# class Cards(models):
 
-    class Table:
-        name = "Cards"
-        hash_key = "card_id"
-
-    ID = fields.String(hash_key=True)
-    title = fields.String()
-    logo = fields.String()
-    video = fields.String()
-    link = fields.String()
-    position = fields.Integer()
+#     title = models.CharField(max_length=20)
+#     logo = models.ImageField()
+#     video = models.FileField()
+#     link = models.CharField(max_length=100)
+#     position = models.IntegerField()

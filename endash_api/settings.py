@@ -1,12 +1,14 @@
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
+from cards.services import initialize_gspread
+
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-%wypzc9l_@n8p280)rjc65fot7f4mwu8y8=d*bbkojl^1=()l-'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
@@ -22,6 +24,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'cards',
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',  
+        'NAME': BASE_DIR / 'db.sqlite3',  
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,8 +89,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_REGION = os.getenv('AWS_REGION')
-
-print(AWS_REGION)
+GSPREAD_CLIENT = initialize_gspread()  
