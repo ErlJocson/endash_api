@@ -49,7 +49,7 @@ def delete_card(doc_name: str,  row_id: int, sheet_name: str = None):
   try:
     all_data = worksheet.get_all_values()
     header, data = all_data[0], all_data[1:]
-    new_data = [row for row in data if str(row[0]) != str(row_id)]  # Assuming unique ID is in the first column
+    new_data = [row for row in data if str(row[0]) != str(row_id)]  
     worksheet.clear()
     worksheet.append_row(header)
     for row in new_data:
@@ -63,14 +63,12 @@ def update_card(doc_name: str, row_id:int, new_data: list, sheet_name: str = Non
   sh = settings.GSPREAD_CLIENT.open(doc_name)
   worksheet = sh.worksheet(sheet_name) if sheet_name else sh.get_worksheet(0)
   try:
-      # Get all data from the sheet
       all_data = worksheet.get_all_values()
-      # Find the row to update
       for index, row in enumerate(all_data):
-          if str(row[0]) == str(row_id):  # Assuming the unique ID is in the first column
+          if str(row[0]) == str(row_id):  
               worksheet.update(f'A{index+1}:F{index+1}', [new_data])
-              return {"status": "success", "message": f"Row with unique ID {row_id} updated successfully."}
+              return True
       
-      return {"status": "error", "message": f"Unique ID {row_id} not found."}
-  except Exception as e:
-      return {"status": "error", "message": str(e)}
+      return False
+  except:
+      return False
